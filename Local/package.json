@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "set NODE_ENV=development && set BABEL_ENV=development && webpack-dev-server --config webpack.config.dev.js --https false --open http://localhost:9999/index.html --watch",
+    "build": "webpack --config webpack.config.prod.js",
     "https": "set NODE_ENV=development && set BABEL_ENV=development && webpack-dev-server --config webpack.config.dev.js --https true --open https://localhost:9999/index.html --watch"
   },
   "keywords": [
@@ -20,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "@zoomus/websdk": "^1.7.6",
+    "axios": "^0.19.2",
     "jquery": "^3.4.1",
     "lodash": "^4.17.14",
     "react": "16.8.6",
@@ -49,6 +51,7 @@
     "url-loader": "^1.1.2",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "webpack-merge": "^4.2.2"
   }
 }

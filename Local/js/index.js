@@ -1,4 +1,5 @@
 import { ZoomMtg } from '@zoomus/websdk';
+import axios from 'axios';
 
 console.log('checkSystemRequirements');
 console.log(JSON.stringify(ZoomMtg.checkSystemRequirements()));
@@ -11,14 +12,15 @@ ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
 
-const API_KEY = 'YOUR_API_KEY';
-
+const API_KEY = '52i078P_RmWtImPj1RKubQ';
 /**
     * NEVER PUT YOUR ACTUAL API SECRET IN CLIENT SIDE CODE, THIS IS JUST FOR QUICK PROTOTYPING
     * The below generateSignature should be done server side as not to expose your api secret in public
     * You can find an eaxmple in here: https://marketplace.zoom.us/docs/sdk/native-sdks/Web-Client-SDK/tutorial/generate-signature
     */
-const API_SECRET = 'YOUR_API_SECRET';
+
+const GENERATE_SIGNATURE_URL ='https://code1i2h4g.execute-api.us-east-2.amazonaws.com/prod/unruptzoomsig';
+
 
 testTool = window.testTool;
 document.getElementById('display_name').value = "Local" + ZoomMtg.getJSSDKVersion()[0] + testTool.detectOS() + "#" + testTool.getBrowserInfo();
@@ -36,13 +38,16 @@ document.getElementById('join_meeting').addEventListener('click', (e) => {
         role: parseInt(document.getElementById('meeting_role').value, 10)
     };
 
-    ZoomMtg.generateSignature({
-        meetingNumber: meetConfig.meetingNumber,
-        apiKey: meetConfig.apiKey,
-        apiSecret: meetConfig.apiSecret,
-        role: meetConfig.role,
-        success(res) {
-            console.log('signature', res.result);
+    const signature_url = `${GENERATE_SIGNATURE_URL}?meetingNumber=${meetConfig.meetingNumber}&role=${meetConfig.role}`;
+    $.ajax({
+        url: signature_url,
+        accepts: { json: 'application/json' },
+        type: 'GET',
+
+        contentType: 'text/plain',
+        dataType: 'json',
+        success: function (response) {
+            console.log('signature', response.signature);
             ZoomMtg.init({
                 leaveUrl: 'http://www.zoom.us',
                 success() {
@@ -50,7 +55,7 @@ document.getElementById('join_meeting').addEventListener('click', (e) => {
                         {
                             meetingNumber: meetConfig.meetingNumber,
                             userName: meetConfig.userName,
-                            signature: res.result,
+                            signature: response.signature,
                             apiKey: meetConfig.apiKey,
                             passWord: meetConfig.passWord,
                             success() {
@@ -67,6 +72,7 @@ document.getElementById('join_meeting').addEventListener('click', (e) => {
                     console.log(res);
                 }
             });
-        }
-    });
+        },
+    })
+
 });
