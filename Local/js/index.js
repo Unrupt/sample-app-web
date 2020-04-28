@@ -1,5 +1,4 @@
 import { ZoomMtg } from '@zoomus/websdk';
-import axios from 'axios';
 
 console.log('checkSystemRequirements');
 console.log(JSON.stringify(ZoomMtg.checkSystemRequirements()));
@@ -30,8 +29,7 @@ document.getElementById('join_meeting').addEventListener('click', (e) => {
 
     const meetConfig = {
         apiKey: API_KEY,
-        apiSecret: API_SECRET,
-        meetingNumber: parseInt(document.getElementById('meeting_number').value, 10),
+        meetingNumber: parseInt(document.getElementById('meeting_number').value.replace(/ /g,''), 10),     // remove whitespace from the meeting number
         userName: document.getElementById('display_name').value,
         passWord: document.getElementById('meeting_pwd').value,
         leaveUrl: 'https://zoom.us',
@@ -39,11 +37,11 @@ document.getElementById('join_meeting').addEventListener('click', (e) => {
     };
 
     const signature_url = `${GENERATE_SIGNATURE_URL}?meetingNumber=${meetConfig.meetingNumber}&role=${meetConfig.role}`;
+    console.log(signature_url);
     $.ajax({
         url: signature_url,
         accepts: { json: 'application/json' },
         type: 'GET',
-
         contentType: 'text/plain',
         dataType: 'json',
         success: function (response) {
@@ -74,5 +72,4 @@ document.getElementById('join_meeting').addEventListener('click', (e) => {
             });
         },
     })
-
-});
+}); 
